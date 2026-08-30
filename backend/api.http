@@ -1,0 +1,63 @@
+### HoneyChain API Manual Tests
+# Requirements: VSCode REST Client Extension (or similar)
+# Be sure to have the backend running: `npm run dev` in the backend directory
+# and a Hardhat node running: `npx hardhat node` in the root directory
+
+@baseUrl = http://localhost:3000
+
+### 1. Health Check
+GET {{baseUrl}}/health
+
+### 2. Create a Batch
+# @name createBatch
+POST {{baseUrl}}/batches
+Content-Type: application/json
+
+{
+  "hive_id": "HIVE-TEST-001",
+  "beekeeper_id": "BK-001",
+  "beekeeper_name": "Ramesh Kumar",
+  "beekeeper_addr": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "harvest_date": "2024-05-15",
+  "quantity_kg": 50.5,
+  "honey_type": "Multiflora",
+  "quality_grade": "A+"
+}
+
+### Store the generated batch ID
+@batchId = {{createBatch.response.body.batch_id}}
+
+### 3. Transfer Custody to Processor
+# Transfer Types: 1=Processor, 2=Distributor, 3=Retailer
+POST {{baseUrl}}/batches/{{batchId}}/transfer
+Content-Type: application/json
+
+{
+  "to_address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  "transfer_type": 1,
+  "location_json": "{\"facility\":\"Coorg Processing Unit\",\"lat\":12.3,\"lng\":75.8}"
+}
+
+### 4. Activate a QR Code for a Jar
+# @name activateQR
+POST {{baseUrl}}/batches/{{batchId}}/qr
+Content-Type: application/json
+
+{
+  "jar_serial": "JAR-2024-KA-001",
+  "is_active": true
+}
+
+### Store the generated QR ID
+@qrId = {{activateQR.response.body.qr_id}}
+
+### 5. Fetch Full Batch History
+GET {{baseUrl}}/batches/{{batchId}}/history
+
+### 6. Public QR Verification
+# By internal qr_id bytes32 hash:
+GET {{baseUrl}}/public/verify/{{qrId}}
+
+### 7. Public QR Verification
+# By raw jar_serial string:
+GET {{baseUrl}}/public/verify/JAR-2024-KA-001
