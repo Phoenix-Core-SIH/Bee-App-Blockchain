@@ -47,15 +47,22 @@ export default function LoginScreen() {
   const { requestOtp, verifyOtp } = useAuth();
 
   const handleRequestOtp = async () => {
-    if (!phone.trim()) {
+    let formattedPhone = phone.trim();
+    if (!formattedPhone) {
       Alert.alert('Enter your phone number');
       return;
     }
+    
+    // Standardize ISD code
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+91' + formattedPhone;
+    }
+
     setLoading(true);
     try {
-      await requestOtp(phone.trim());
+      await requestOtp(formattedPhone);
       setOtpSent(true);
-      Alert.alert('OTP Sent', `A verification code was sent to ${phone}`);
+      Alert.alert('OTP Sent', `A verification code was sent to ${formattedPhone}`);
     } catch (e: any) {
       Alert.alert('Error', e?.data?.detail || 'Could not send OTP. Try again.');
     } finally {
@@ -64,13 +71,22 @@ export default function LoginScreen() {
   };
 
   const handleVerifyOtp = async () => {
+    let formattedPhone = phone.trim();
+    if (!formattedPhone) {
+      Alert.alert('Enter your phone number');
+      return;
+    }
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+91' + formattedPhone;
+    }
+
     if (!otp.trim()) {
       Alert.alert('Enter the OTP');
       return;
     }
     setLoading(true);
     try {
-      await verifyOtp(phone.trim(), otp.trim());
+      await verifyOtp(formattedPhone, otp.trim());
       router.replace('/(tabs)/');
     } catch (e: any) {
       Alert.alert('Invalid OTP', 'The code you entered is incorrect. Try again.');
@@ -80,17 +96,22 @@ export default function LoginScreen() {
   };
 
   const handleRegister = async () => {
-    if (!phone) {
+    let formattedPhone = phone.trim();
+    if (!formattedPhone) {
       Alert.alert('Enter your phone number');
       return;
     }
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+91' + formattedPhone;
+    }
+
     setLoading(true);
     try {
       // Backend creates user automatically on first OTP verify (get_or_create)
       // Just send the OTP and let them verify to create their account
-      await requestOtp(phone.trim());
+      await requestOtp(formattedPhone);
       setOtpSent(true);
-      Alert.alert('OTP Sent!', 'Enter the code sent to your phone to create your account.');
+      Alert.alert('OTP Sent!', `Enter the code sent to ${formattedPhone} to create your account.`);
     } catch (e: any) {
       Alert.alert('Error', e?.data?.phone_number?.[0] || 'Could not send OTP. Check the number and try again.');
     } finally {
