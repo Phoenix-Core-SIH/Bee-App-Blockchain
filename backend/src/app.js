@@ -15,6 +15,7 @@ const express = require("express");
 
 const batchRoutes  = require("./routes/batches.js");
 const publicRoutes = require("./routes/public.js");
+const authRoutes   = require("./routes/auth.js");
 const { ApiError } = require("./blockchain/BlockchainService.js");
 
 /**
@@ -45,6 +46,7 @@ function createApp({ blockchain }) {
   });
 
   // ── Routes ─────────────────────────────────────────────────────────────────
+  app.use("/auth",           authRoutes);
   app.use("/batches",        batchRoutes);
   app.use("/public",         publicRoutes);
 

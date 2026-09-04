@@ -12,11 +12,13 @@
 const express = require("express");
 const { ethers } = require("ethers");
 const { randomUUID: uuidv4 } = require("crypto");
+const { authenticateJWT, requireRole } = require("../middleware/auth.js");
 const { validate, CreateBatchSchema, TransferCustodySchema, ActivateQRSchema } = require("../middleware/validate.js");
 const {
   getDb,
   insertBatch,
   getBatchById,
+  getAllBatches,
   insertTransfer,
   getTransfersByBatchId,
   insertQR,
@@ -24,6 +26,23 @@ const {
 } = require("../db/database.js");
 
 const router = express.Router();
+
+// ─── GET /batches ─────────────────────────────────────────────────────────────
+
+/**
+ * @route GET /batches
+ * @desc  Returns all honey batches (off-chain metadata with current on-chain custodian).
+ *        Used for dashboard overview.
+ */
+router.get("/", authenticateJWT, async (req, res, next) => {
+  try {
+    const db = getDb();
+    const batches = getAllBatches(db);
+    res.json(batches);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ─── Transfer type label map ──────────────────────────────────────────────────
 
@@ -47,7 +66,7 @@ function strToBytes32(str) {
  * @desc  Creates a honey batch on-chain and records metadata off-chain.
  * @body  {CreateBatchSchema}
  */
-router.post("/", validate(CreateBatchSchema), async (req, res, next) => {
+router.post("/", authenticateJWT, requireRole("BEEKEEPER_OPS", "ADMIN"), validate(CreateBatchSchema), async (req, res, next) => {
   try {
     const blockchain = req.app.get("blockchain");
     const db = getDb();
@@ -116,7 +135,7 @@ router.post("/", validate(CreateBatchSchema), async (req, res, next) => {
  * @desc  Records a custody transfer on-chain and in the DB.
  * @body  {TransferCustodySchema}
  */
-router.post("/:id/transfer", validate(TransferCustodySchema), async (req, res, next) => {
+router.post("/:id/transfer", authenticateJWT, validate(TransferCustodySchema), async (req, res, next) => {
   try {
     const blockchain = req.app.get("blockchain");
     const db = getDb();
@@ -125,6 +144,29 @@ router.post("/:id/transfer", validate(TransferCustodySchema), async (req, res, n
     const batchRow  = getBatchById(db, batchUuid);
     if (!batchRow) {
       return res.status(404).json({ error: "Batch not found in database", batch_id: batchUuid });
+    }
+
+    // Dynamic custody check for transfer
+    const transfers = getTransfersByBatchId(db, batchUuid);
+    let expectedRole = "BEEKEEPER_OPS"; // Default if no transfers yet
+
+    if (transfers && transfers.length > 0) {
+      const latestTransfer = transfers[0]; // ordered by transferred_at DESC
+      // transfer_type: 0=Harvest, 1=Processor, 2=Distributor, 3=Retailer
+      switch (latestTransfer.transfer_type) {
+        case 0: expectedRole = "BEEKEEPER_OPS"; break;
+        case 1: expectedRole = "PROCESSOR_OPS"; break;
+        case 2: expectedRole = "DISTRIBUTOR_OPS"; break;
+        case 3: expectedRole = "RETAILER_OPS"; break;
+      }
+    }
+
+    if (req.operator.role !== "ADMIN" && req.operator.role !== expectedRole) {
+      return res.status(403).json({ 
+        error: "Forbidden: You are not authorized to transfer this batch at its current stage",
+        expected_role: expectedRole,
+        your_role: req.operator.role
+      });
     }
 
     const batchIdBytes32 = uuidToBytes32(batchUuid);
@@ -176,7 +218,7 @@ router.post("/:id/transfer", validate(TransferCustodySchema), async (req, res, n
  * @desc  Activates a QR code and links it to a batch on-chain.
  * @body  {ActivateQRSchema}
  */
-router.post("/:id/qr", validate(ActivateQRSchema), async (req, res, next) => {
+router.post("/:id/qr", authenticateJWT, requireRole("BEEKEEPER_OPS", "PROCESSOR_OPS", "ADMIN"), validate(ActivateQRSchema), async (req, res, next) => {
   try {
     const blockchain = req.app.get("blockchain");
     const db = getDb();

@@ -83,6 +83,15 @@ function initSchema(database) {
       on_chain_tx   TEXT,
       activated_at  TEXT DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS operators (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      username      TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role          TEXT NOT NULL,
+      entity_id     TEXT,
+      created_at    TEXT DEFAULT (datetime('now'))
+    );
   `);
 }
 
@@ -103,6 +112,10 @@ function insertBatch(db, batch) {
 
 function getBatchById(db, batchId) {
   return db.prepare("SELECT * FROM batches WHERE batch_id = ?").get(batchId);
+}
+
+function getAllBatches(db) {
+  return db.prepare("SELECT * FROM batches ORDER BY created_at DESC").all();
 }
 
 // ─── Transfer helpers ─────────────────────────────────────────────────────────
@@ -150,16 +163,32 @@ function getBatchByQrId(db, qrId) {
   `).get(qrId);
 }
 
+// ─── Operator helpers ────────────────────────────────────────────────────────
+
+function insertOperator(db, op) {
+  db.prepare(`
+    INSERT INTO operators (username, password_hash, role, entity_id)
+    VALUES (@username, @password_hash, @role, @entity_id)
+  `).run(op);
+}
+
+function getOperatorByUsername(db, username) {
+  return db.prepare(`SELECT * FROM operators WHERE username = ?`).get(username);
+}
+
 module.exports = {
   getDb,
   closeDb,
   initSchema,
   insertBatch,
   getBatchById,
+  getAllBatches,
   insertTransfer,
   getTransfersByBatchId,
   insertQR,
   getQRByBatchId,
   getQRByQrId,
   getBatchByQrId,
+  insertOperator,
+  getOperatorByUsername,
 };

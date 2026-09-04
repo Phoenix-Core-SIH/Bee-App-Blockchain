@@ -8,10 +8,36 @@
 ### 1. Health Check
 GET {{baseUrl}}/health
 
-### 2. Create a Batch
+### 0. Auth
+
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "password": "pass"
+}
+
+###
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "password": "pass"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### 1. Create a Batch
 # @name createBatch
 POST {{baseUrl}}/batches
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "hive_id": "HIVE-TEST-001",
@@ -31,6 +57,7 @@ Content-Type: application/json
 # Transfer Types: 1=Processor, 2=Distributor, 3=Retailer
 POST {{baseUrl}}/batches/{{batchId}}/transfer
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "to_address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -42,6 +69,7 @@ Content-Type: application/json
 # @name activateQR
 POST {{baseUrl}}/batches/{{batchId}}/qr
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "jar_serial": "JAR-2024-KA-001",

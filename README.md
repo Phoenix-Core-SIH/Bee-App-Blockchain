@@ -45,7 +45,24 @@ npx hardhat run scripts/deploy.js --network localhost
 ```
 This script will automatically generate a `.env.deployed` file in the project root containing the deployed contract address and private keys.
 
-### 3. Start the Backend API
+### 3. Deploy to Polygon Amoy Testnet
+
+To deploy to the Polygon Amoy testnet, follow these steps:
+
+1. **Fund your wallet:** Ensure the wallet associated with `DEPLOYER_PRIVATE_KEY` has Amoy testnet MATIC. You can get test tokens from the Polygon Amoy Faucet.
+2. **Configure environment:** Create a `.env` file in the root directory (copy `.env.example`) and fill in your `AMOY_RPC_URL`, `DEPLOYER_PRIVATE_KEY`, and `POLYGONSCAN_API_KEY`.
+3. **Deploy:**
+   ```bash
+   npx hardhat run scripts/deploy.js --network amoy
+   ```
+   This will output your configuration to `backend/src/config/contract.json`.
+4. **Verify Contract:**
+   Wait a minute or two for the transaction to be indexed, then verify the contract code on Polygonscan:
+   ```bash
+   npx hardhat verify --network amoy <YOUR_DEPLOYED_CONTRACT_ADDRESS>
+   ```
+
+### 4. Start the Backend API
 
 Link the deployed environment variables and start the server:
 ```bash
