@@ -230,7 +230,7 @@ describe("POST /batches/:id/transfer", () => {
       });
     expect(res.status).toBe(201);
     expect(res.body.transfer_id).toBeDefined();
-    expect(res.body.tx_hash).toMatch(/^0x[0-9a-fA-F]{64}$/);
+    expect(res.body.on_chain_tx).toMatch(/^0x[0-9a-fA-F]{64}$/);
     expect(res.body.to.toLowerCase()).toBe(PROCESSOR_ADDR.toLowerCase());
     expect(res.body.transfer_type).toBe("Processor");
   });
@@ -293,7 +293,7 @@ describe("POST /batches/:id/qr", () => {
     expect(res.status).toBe(201);
     expect(res.body.qr_id).toMatch(/^0x[0-9a-fA-F]{64}$/);
     expect(res.body.jar_serial).toBe("JAR-2024-KA-001");
-    expect(res.body.tx_hash).toMatch(/^0x[0-9a-fA-F]{64}$/);
+    expect(res.body.on_chain_tx).toMatch(/^0x[0-9a-fA-F]{64}$/);
     createdQrId = res.body.qr_id;
   });
 

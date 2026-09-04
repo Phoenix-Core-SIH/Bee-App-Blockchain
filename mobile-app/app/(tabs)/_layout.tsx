@@ -34,6 +34,9 @@ function LanguageSwitcher() {
             <TouchableOpacity style={styles.langOption} onPress={() => setLang('kn')}>
               <Text style={[styles.langText, i18n.language === 'kn' && styles.langActive]}>Kannada (ಕನ್ನಡ)</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.langOption} onPress={() => setLang('bn')}>
+              <Text style={[styles.langText, i18n.language === 'bn' && styles.langActive]}>Bengali (বাংলা)</Text>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -85,6 +88,13 @@ export default function TabLayout() {
         options={{
           title: t('tab_alerts'),
           tabBarIcon: ({ color }) => <Ionicons name="notifications-outline" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="diagnosis"
+        options={{
+          title: t('tab_diagnosis'),
+          tabBarIcon: ({ color }) => <Ionicons name="camera-outline" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

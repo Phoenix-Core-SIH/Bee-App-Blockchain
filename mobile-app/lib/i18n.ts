@@ -70,6 +70,12 @@ const resources = {
       "rate_hivetrack": "Rate HiveTrack",
       "rate_desc": "Share your review",
       "sign_out": "Sign Out",
+      
+      // Dynamic ML Disease Codes
+      "disease_healthy": "Healthy",
+      "disease_ant_problems": "Ant Problems",
+      "disease_varroa_mites": "Varroa Mites",
+      "disease_unknown": "Unknown Status",
     }
   },
   hi: {
@@ -136,6 +142,12 @@ const resources = {
       "rate_hivetrack": "HiveTrack को रेट करें",
       "rate_desc": "अपनी समीक्षा साझा करें",
       "sign_out": "साइन आउट",
+      
+      // Dynamic ML Disease Codes
+      "disease_healthy": "स्वस्थ",
+      "disease_ant_problems": "चींटियों की समस्या",
+      "disease_varroa_mites": "वरोआ घुन (Varroa Mites)",
+      "disease_unknown": "अज्ञात स्थिति",
     }
   },
   kn: {
@@ -202,6 +214,85 @@ const resources = {
       "rate_hivetrack": "HiveTrack ರೇಟ್ ಮಾಡಿ",
       "rate_desc": "ನಿಮ್ಮ ವಿಮರ್ಶೆಯನ್ನು ಹಂಚಿಕೊಳ್ಳಿ",
       "sign_out": "ಸೈನ್ ಔಟ್",
+      
+      // Dynamic ML Disease Codes
+      "disease_healthy": "ಆರೋಗ್ಯಕರ",
+      "disease_ant_problems": "ಇರುವೆ ಸಮಸ್ಯೆಗಳು",
+      "disease_varroa_mites": "ವರೋವಾ ಹುಳಗಳು",
+      "disease_unknown": "ಅಜ್ಞಾತ ಸ್ಥಿತಿ",
+    }
+  },
+  bn: {
+    translation: {
+      "language_selector": "ভাষা নির্বাচন করুন",
+      "continue": "চালিয়ে যান",
+      "welcome_back": "ফিরে আসার জন্য স্বাগতম,",
+      "join_network": "এপিয়ারি নেটওয়ার্কে যোগ দিন",
+      "sign_in": "সাইন ইন করুন",
+      "register": "নিবন্ধন করুন",
+      "phone_number": "ফোন নম্বর",
+      "otp_code": "ওটিপি কোড",
+      "send_otp": "ওটিপি পাঠান",
+      "sign_in_button": "HiveTrack-এ সাইন ইন করুন",
+      "create_account": "আমার অ্যাকাউন্ট তৈরি করুন",
+      "change_number": "← নম্বর পরিবর্তন করুন",
+
+      // Tabs
+      "tab_home": "হোম",
+      "tab_apiary": "এপিয়ারি",
+      "tab_alerts": "সতর্কতা",
+      "tab_profile": "প্রোফাইল",
+      "tab_diagnosis": "রোগ নির্ণয়",
+
+      // Dashboard
+      "active_hives": "সক্রিয় মৌচাক",
+      "yield_season": "এই মৌসুমের ফলন",
+      "recent_activity": "সাম্প্রতিক কার্যকলাপ",
+
+      // Apiary
+      "apiary_dashboard": "এপিয়ারি ড্যাশবোর্ড",
+      "my_apiaries": "আমার এপিয়ারি",
+      "hives_lowercase": "মৌচাক",
+      "healthy": "সুস্থ",
+      "yield": "ফলন",
+      "add_hive": "+ মৌচাক যোগ করুন",
+
+      // Profile
+      "member_since": "সদস্য",
+      "years_farming": "চাষের বছর",
+      "total_hives": "মোট মৌচাক",
+      "season_yield": "মৌসুমের ফলন",
+      "apiaries": "এপিয়ারি",
+      "light_mode": "লাইট মোড",
+      "natural_daylight": "প্রাকৃতিক দিনের আলো",
+      "account": "অ্যাকাউন্ট",
+      "edit_profile": "প্রোফাইল সম্পাদনা করুন",
+      "edit_profile_desc": "নাম, ছবি, বায়ো",
+      "notifications": "বিজ্ঞপ্তি",
+      "notifications_desc": "সতর্কতা এবং অনুস্মারক",
+      "privacy_security": "গোপনীয়তা ও নিরাপত্তা",
+      "privacy_desc": "পাসওয়ার্ড, 2FA",
+      "farm": "খামার",
+      "farm_details": "খামারের বিবরণ",
+      "farm_details_desc": "অবস্থান, শংসাপত্র",
+      "export_data": "ডেটা রপ্তানি করুন",
+      "export_data_desc": "CSV, PDF রিপোর্ট",
+      "integrations": "ইন্টিগ্রেশন",
+      "integrations_desc": "আবহাওয়া API, সেন্সর",
+      "support": "সমর্থন",
+      "beekeeper_guide": "মৌমাছি পালক গাইড",
+      "beekeeper_guide_desc": "পরামর্শ এবং সেরা অনুশীলন",
+      "help_feedback": "সাহায্য ও প্রতিক্রিয়া",
+      "help_feedback_desc": "সমর্থন যোগাযোগ করুন",
+      "rate_hivetrack": "HiveTrack রেট করুন",
+      "rate_desc": "আপনার পর্যালোচনা শেয়ার করুন",
+      "sign_out": "সাইন আউট",
+      
+      // Dynamic ML Disease Codes
+      "disease_healthy": "সুস্থ",
+      "disease_ant_problems": "পিঁপড়ার সমস্যা",
+      "disease_varroa_mites": "ভারোয়া মাইটস",
+      "disease_unknown": "অজানা স্থিতি",
     }
   }
 };

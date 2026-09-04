@@ -26,7 +26,7 @@ const UUIDv4 = z.string().uuid("Must be a valid UUID v4");
 // ─── Request schemas ──────────────────────────────────────────────────────────
 
 const CreateBatchSchema = z.object({
-  batch_id:        UUIDv4.optional(),           // auto-generated if omitted
+  batch_id:        z.string().uuid("Invalid UUID format").optional(),           // auto-generated if omitted
   hive_id:         z.string().min(1).max(100),
   beekeeper_id:    z.string().min(1).max(100),
   beekeeper_name:  z.string().min(1).max(200).optional(),

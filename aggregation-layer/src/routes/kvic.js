@@ -230,9 +230,13 @@ router.get('/beekeepers/:id', authenticateJWT, async (req, res, next) => {
     const scope = req.user.scope;
     const beekeeperId = req.params.id;
     
-    const [blockchainRes] = await Promise.all([
-      fetchFromBlockchain('/batches')
+    const [blockchainRes, djangoRes] = await Promise.all([
+      fetchFromBlockchain('/batches'),
+      fetchFromDjango(`/api/accounts/beekeepers/${beekeeperId}/`)
     ]);
+    
+    console.log("[KVIC DEBUG] blockchainRes.data length:", blockchainRes.data ? blockchainRes.data.length : 0);
+    console.log("[KVIC DEBUG] blockchainRes.error:", blockchainRes.error);
     
     let batches = blockchainRes.data || [];
     batches = batches.filter(b => String(b.beekeeper_id) === String(beekeeperId));
@@ -244,13 +248,24 @@ router.get('/beekeepers/:id', authenticateJWT, async (req, res, next) => {
       }
     }
     
+    const partial = !!djangoRes.error;
+    const unavailable = djangoRes.error ? ['django'] : [];
+    
+    let name = 'Unknown';
+    let hive_count = 0;
+    
+    if (!djangoRes.error && djangoRes.data) {
+       name = djangoRes.data.name || `${djangoRes.data.first_name || ''} ${djangoRes.data.last_name || ''}`.trim() || 'Unknown';
+       hive_count = djangoRes.data.hive_count || 0;
+    }
+    
     res.json({
-      partial: true,
-      unavailable: ['django'],
+      partial,
+      unavailable,
       data: {
         beekeeper_id: beekeeperId,
-        name: batches.length > 0 ? batches[0].beekeeper_name : 'Unknown',
-        hive_count: 0, // Mocked
+        name: name,
+        hive_count: hive_count,
         batches: batches
       }
     });

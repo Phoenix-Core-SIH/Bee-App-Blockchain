@@ -120,7 +120,7 @@ router.post("/", authenticateJWT, requireRole("BEEKEEPER_OPS", "ADMIN"), validat
       batch_id:      batchUuid,
       batch_id_hex:  batchIdBytes32,
       metadata_hash: metadataHash,
-      tx_hash:       txResult.txHash,
+      on_chain_tx:   txResult.txHash,
       block_number:  txResult.blockNumber,
     });
   } catch (err) {
@@ -203,7 +203,7 @@ router.post("/:id/transfer", authenticateJWT, validate(TransferCustodySchema), a
       to:            body.to_address,
       transfer_type: TRANSFER_LABELS[body.transfer_type],
       location_hash: locationHash,
-      tx_hash:       txResult.txHash,
+      on_chain_tx:   txResult.txHash,
       block_number:  txResult.blockNumber,
     });
   } catch (err) {
@@ -252,7 +252,7 @@ router.post("/:id/qr", authenticateJWT, requireRole("BEEKEEPER_OPS", "PROCESSOR_
       batch_id:    batchUuid,
       jar_serial:  body.jar_serial,
       is_active:   body.is_active,
-      tx_hash:     txResult.txHash,
+      on_chain_tx: txResult.txHash,
       block_number: txResult.blockNumber,
     });
   } catch (err) {
