@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # 1. Hardhat Node (Local Blockchain)
+  hardhat:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm run node # Assuming there's a node script in root or we can just run npx hardhat node
+    ports:
+      - "8545:8545"
+
+  # 2. Redis for Celery
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # 3. Blockchain Backend (Node.js)
+  blockchain-backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - RPC_URL=http://hardhat:8545
+      - HARDHAT_NETWORK=localhost
+    depends_on:
+      - hardhat
+
+  # 4. Django Backend (Mobile API)
+  django-backend:
+    build:
+      context: ./bee-app-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - BLOCKCHAIN_URL=http://blockchain-backend:3000
+    depends_on:
+      - redis
+      - blockchain-backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  # 5. Celery Worker (for Django)
+  celery-worker:
+    build:
+      context: ./bee-app-backend
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - BLOCKCHAIN_URL=http://blockchain-backend:3000
+    depends_on:
+      - redis
+      - django-backend
+    command: celery -A config worker -l info
+
+  # 6. Celery Beat (for scheduled retries)
+  celery-beat:
+    build:
+      context: ./bee-app-backend
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - django-backend
+    command: celery -A config beat -l info
+
+  # 7. Aggregation Layer (BFF)
+  aggregation-layer:
+    build:
+      context: ./aggregation-layer
+    ports:
+      - "4000:4000"
+    environment:
+      - BLOCKCHAIN_SERVICE_URL=http://blockchain-backend:3000
+      - BEEKEEPER_SERVICE_URL=http://django-backend:8000
+    depends_on:
+      - blockchain-backend
+      - django-backend

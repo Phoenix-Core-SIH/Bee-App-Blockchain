@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "HiveTrack",
+    "slug": "hivetrack",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "scheme": "hivetrack",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F5EDD8"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.honeychain.hivetrack"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F5EDD8"
+      },
+      "package": "com.honeychain.hivetrack"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ]
+  }
+}

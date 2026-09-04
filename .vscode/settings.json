@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/bee-app-backend/venv/bin/python",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/bee-app-backend"
+  ]
+}
