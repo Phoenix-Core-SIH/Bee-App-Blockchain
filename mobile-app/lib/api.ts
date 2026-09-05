@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const IS_EMULATOR = false; // set true if running in Android emulator
 const DJANGO_BASE_URL = IS_EMULATOR
   ? 'http://10.0.2.2:8000'
-  : 'http://192.168.1.197:8000'; // ← your machine LAN IP
+  : 'https://cruel-pigs-brush.loca.lt'; // ← localtunnel URL
 
 const TOKEN_KEY = 'hivetrack_access_token';
 const REFRESH_KEY = 'hivetrack_refresh_token';
